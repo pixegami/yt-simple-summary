@@ -2,4 +2,3 @@ yt-dlp
 pydantic
 openai
 webvtt-py
-markdown-pdf
