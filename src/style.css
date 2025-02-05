@@ -1,0 +1,130 @@
+/* Base styles */
+:root {
+    --text-primary: #1a1a1a;
+    --text-secondary: #4a5568;
+    --accent-color: #3b82f6;
+    --border-color: #e5e7eb;
+    --code-bg: #f3f4f6;
+  }
+  
+  body {
+    font-family: system-ui, -apple-system, sans-serif;
+    line-height: 1.6;
+    color: var(--text-primary);
+    max-width: 65ch;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+  }
+  
+  /* Typography */
+  h1, h2, h3, h4, h5, h6 {
+    margin-top: 2em;
+    margin-bottom: 1em;
+    font-weight: 600;
+    line-height: 1.25;
+  }
+  
+  h1 { font-size: 2em; }
+  h2 { font-size: 1.5em; }
+  h3 { font-size: 1.25em; }
+  h4 { font-size: 1em; }
+  
+  p {
+    margin-bottom: 1.5em;
+  }
+  
+  /* Links */
+  a {
+    color: var(--accent-color);
+    text-decoration: none;
+  }
+  
+  a:hover {
+    text-decoration: underline;
+  }
+  
+  /* Lists */
+  ul, ol {
+    margin: 1em 0;
+    padding-left: 2em;
+  }
+  
+  li {
+    margin: 0.5em 0;
+  }
+  
+  /* Code */
+  code {
+    font-family: ui-monospace, monospace;
+    font-size: 0.9em;
+    padding: 0.2em 0.4em;
+    background: var(--code-bg);
+    border-radius: 4px;
+  }
+  
+  pre {
+    background: var(--code-bg);
+    padding: 1em;
+    border-radius: 6px;
+    overflow-x: auto;
+  }
+  
+  pre code {
+    padding: 0;
+    background: none;
+  }
+  
+  /* Blockquotes */
+  blockquote {
+    margin: 1em 0;
+    padding-left: 1em;
+    border-left: 4px solid var(--border-color);
+    color: var(--text-secondary);
+  }
+  
+  /* Tables */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1em 0;
+  }
+  
+  th, td {
+    padding: 0.75em;
+    border: 1px solid var(--border-color);
+    text-align: left;
+  }
+  
+  th {
+    background: var(--code-bg);
+    font-weight: 600;
+  }
+  
+  /* Horizontal Rule */
+  hr {
+    border: 0;
+    border-top: 1px solid var(--border-color);
+    margin: 2em 0;
+  }
+  
+  /* Images */
+  img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 6px;
+  }
+  
+  /* Inline elements */
+  strong {
+    font-weight: 600;
+  }
+  
+  em {
+    font-style: italic;
+  }
+  
+  /* Selection */
+  ::selection {
+    background: var(--accent-color);
+    color: white;
+  }

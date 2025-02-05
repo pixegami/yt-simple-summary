@@ -4,6 +4,7 @@ from markdown_pdf import MarkdownPdf, Section
 from util import (
     calculate_cost_usd,
     get_markdown_path,
+    get_pdf_path,
     invoke_ai,
 )
 from yt_loader import YouTubeVideo
@@ -70,6 +71,11 @@ def generate_summary(video: YouTubeVideo, transcript: str) -> str:
     )
     print(f"✅ Markdown Summary: {markdown_path}")
 
+    # Also save it as a PDF.
+    pdf_path = get_pdf_path(video_id)
+    generate_pdf(title=video.title, markdown_text=markdown_text, path=pdf_path)
+    print(f"✅ PDF Summary: {pdf_path}")
+
     # Calculate the cost.
     total_cost = calculate_cost_usd(summary_result, takeaways_result, table_result)
     print(f"💵 Total cost: ${total_cost}")
@@ -87,3 +93,15 @@ def generate_markdown(
         markdown_file.write(markdown_text)
 
     return markdown_text
+
+
+def generate_pdf(title: str, markdown_text: str, path: str) -> None:
+
+    css_path = os.path.join(os.path.dirname(__file__), "style.css")
+    with open(css_path, "r") as css_file:
+        css_text = css_file.read()
+
+    pdf = MarkdownPdf()
+    pdf.meta["title"] = title
+    pdf.add_section(Section(markdown_text, toc=False), user_css=css_text)
+    pdf.save(path)
