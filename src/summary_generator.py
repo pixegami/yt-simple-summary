@@ -25,6 +25,10 @@ GENERATE_GENERATE_TABLE_SYSTEM_PROMPT = """
 Think if there's a way to express extract the information from the video in the form of a table. What is the data the user wants to consume at a glance? First, think about what type of table would be most useful (e.g. comparison table, tier-list, etc). Then, think about what data/columns should be in the table (only use content from the video). Generate the table in markdown format. Generate the table only.
 """
 
+EXTRACT_CORE_DATA_SYSTEM_PROMPT = """
+Extract 3-5 core data points (about a paragraph each) from the video. This could be a combination of quotes, excerpts, or a summary of ideas. Use a H4 header to mark the start of each data point. This is the most valuable, specific content from the video that we want to take away.
+"""
+
 GENERIC_OUTPUT_FORMAT = """\n\n
 Show your thinking process in <thinking>...</thinking> tags.
 Then return a concise response in <output>...</output> tags.\n
@@ -50,6 +54,11 @@ def generate_summary(video: YouTubeVideo, transcript: str) -> str:
         user_prompt=video_prompt_content,
     )
 
+    core_data_result = invoke_ai(
+        system_prompt=EXTRACT_CORE_DATA_SYSTEM_PROMPT + GENERIC_OUTPUT_FORMAT,
+        user_prompt=video_prompt_content,
+    )
+
     table_result = invoke_ai(
         system_prompt=GENERATE_GENERATE_TABLE_SYSTEM_PROMPT + GENERIC_OUTPUT_FORMAT,
         user_prompt=video_prompt_content,
@@ -58,6 +67,7 @@ def generate_summary(video: YouTubeVideo, transcript: str) -> str:
     markdown_sections = {
         "Summary": summary_result.content,
         "Takeaways": takeaways_result.content,
+        "Core Data": core_data_result.content,
         "Extracted Data": table_result.content,
     }
 

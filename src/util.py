@@ -2,13 +2,13 @@ from dataclasses import dataclass
 import os
 from typing import List
 from urllib.parse import urlparse, parse_qs
-from openai import OpenAI
+import google.generativeai as genai
 
 
-# https://openai.com/api/pricing/
-MODEL = "o3-mini"
-MODEL_INPUT_COST_PER_1M_TOKENS = 1.1  # Cost in USD
-MODEL_OUTPUT_COST_PER_1M_TOKENS = 4.4  # Cost in USD
+# https://ai.google.dev/gemini-api/docs/pricing
+MODEL = "gemini-2.5-flash-preview-05-20"
+MODEL_INPUT_COST_PER_1M_TOKENS = 0.15  # Cost in USD
+MODEL_OUTPUT_COST_PER_1M_TOKENS = 3.50  # Cost in USD
 
 
 @dataclass
@@ -22,26 +22,22 @@ def invoke_ai(system_prompt: str, user_prompt: str) -> InvokeAIResult:
     """
     Invoke the AI model.
     """
-    client = OpenAI()
-    completion = client.chat.completions.create(
-        model=MODEL,
-        messages=[
-            {
-                "role": "developer",
-                "content": system_prompt,
-            },
-            {"role": "user", "content": user_prompt},
-        ],
-    )
+    model = genai.GenerativeModel(MODEL)
 
-    response = completion.choices[0].message
-    input_tokens = completion.usage.prompt_tokens
-    output_tokens = completion.usage.completion_tokens
+    # Combine system and user prompts
+    full_prompt = f"{system_prompt}\n\n{user_prompt}"
 
-    print(f"✨ AI Response: {response}")
+    # Generate content
+    response = model.generate_content(full_prompt)
+
+    # Get token counts from the response
+    input_tokens = response.usage_metadata.prompt_token_count
+    output_tokens = response.usage_metadata.candidates_token_count
+
+    print(f"✨ AI Response: {response.text}")
 
     return InvokeAIResult(
-        content=extract_xml_tag(content=response.content),
+        content=extract_xml_tag(content=response.text),
         input_tokens=input_tokens,
         output_tokens=output_tokens,
     )
