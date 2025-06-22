@@ -48,6 +48,18 @@ Generate a short, descriptive name for this video that can be used as a folder/f
 Only return the name, nothing else.
 """
 
+GENERATE_AGGREGATE_NAME_SYSTEM_PROMPT = """
+Generate a short, descriptive name that captures the common theme or topic across multiple videos. The name should be:
+- 2-4 words maximum
+- Lowercase with hyphens between words
+- Descriptive of the overarching topic/theme that connects all videos
+- Safe for use as a filename (no special characters except hyphens)
+- Examples: "web-development", "machine-learning", "coding-bootcamp", "tech-tutorials"
+
+If the videos cover different topics, use a broader category name that encompasses them.
+Only return the name, nothing else.
+"""
+
 GENERIC_OUTPUT_FORMAT = """\n\n
 Show your thinking process in <thinking>...</thinking> tags.
 Then return a concise response in <output>...</output> tags.\n
