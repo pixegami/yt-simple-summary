@@ -2,6 +2,7 @@ from dataclasses import dataclass
 import os
 from typing import List
 from urllib.parse import urlparse, parse_qs
+from datetime import datetime
 import google.generativeai as genai
 
 
@@ -98,29 +99,33 @@ def get_video_id(url):
         return url
 
 
-def get_output_path(video_id: str) -> str:
-    # Get the output path, and ensure it exists.
-    output_path = f"tmp/{video_id}"
+def get_output_path(video_id: str, descriptive_name: str = None) -> str:
+    # Get the output path with date prefix and descriptive name, and ensure it exists.
+    date_prefix = datetime.now().strftime("%y%m%d")
+    folder_name = f"{date_prefix}-{descriptive_name or 'yt-summary'}"
+    output_path = f"tmp/{folder_name}"
     os.makedirs(output_path, exist_ok=True)
     return output_path
 
 
-def get_metadata_path(video_id: str) -> str:
-    return f"{get_output_path(video_id)}/metadata_{video_id}.json"
+def get_metadata_path(video_id: str, descriptive_name: str = None) -> str:
+    return f"{get_output_path(video_id, descriptive_name)}/{descriptive_name or 'metadata'}_{video_id}.json"
 
 
-def get_transcript_path(video_id: str) -> str:
-    return f"{get_output_path(video_id)}/transcript_{video_id}.txt"
+def get_transcript_path(video_id: str, descriptive_name: str = None) -> str:
+    return f"{get_output_path(video_id, descriptive_name)}/{descriptive_name or 'transcript'}_{video_id}.txt"
 
 
-def get_markdown_path(video_id: str) -> str:
-    return f"{get_output_path(video_id)}/summary_{video_id}.md"
+def get_markdown_path(video_id: str, descriptive_name: str = None) -> str:
+    return f"{get_output_path(video_id, descriptive_name)}/{descriptive_name or 'summary'}_{video_id}.md"
 
 
-def get_pdf_path(video_id: str) -> str:
-    return f"{get_output_path(video_id)}/summary_{video_id}.pdf"
+def get_pdf_path(video_id: str, descriptive_name: str = None) -> str:
+    return f"{get_output_path(video_id, descriptive_name)}/{descriptive_name or 'summary'}_{video_id}.pdf"
 
 
-def get_yt_dlp_path_template() -> str:
+def get_yt_dlp_path_template(descriptive_name: str = None) -> str:
     # Based on https://github.com/yt-dlp/yt-dlp?tab=readme-ov-file#output-template
-    return f"tmp/%(id)s/video_%(id)s.%(ext)s"
+    date_prefix = datetime.now().strftime("%y%m%d")
+    folder_name = f"{date_prefix}-{descriptive_name or 'yt-summary'}"
+    return f"tmp/{folder_name}/video_%(id)s.%(ext)s"

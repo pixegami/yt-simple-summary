@@ -4,12 +4,12 @@ import webvtt
 from util import get_transcript_path
 
 
-def extract_transcript(video_id: str) -> str:
-    vtt_path = get_vtt_file_name(video_id)
+def extract_transcript(video_id: str, descriptive_name: str = None) -> str:
+    vtt_path = get_vtt_file_name(video_id, descriptive_name)
     transcript_str = get_transcript_from_vtt(vtt_path)
 
     # Save the transcript to a file.
-    transcript_path = get_transcript_path(video_id)
+    transcript_path = get_transcript_path(video_id, descriptive_name)
     with open(transcript_path, "w") as f:
         f.write(transcript_str)
 
@@ -17,11 +17,14 @@ def extract_transcript(video_id: str) -> str:
     return transcript_str
 
 
-def get_vtt_file_name(video_id: str) -> str:
+def get_vtt_file_name(video_id: str, descriptive_name: str = None) -> str:
     """
     Get the path to the vtt (subtitle) file for the given video id.
     """
-    srt_files = glob.glob(f"tmp/{video_id}/*.vtt")
+    from datetime import datetime
+    date_prefix = datetime.now().strftime("%y%m%d")
+    folder_name = f"{date_prefix}-{descriptive_name or 'yt-summary'}"
+    srt_files = glob.glob(f"tmp/{folder_name}/*.vtt")
     if len(srt_files) == 0:
         raise ValueError(f"No subtitle files (.vtt) found for {video_id}")
 

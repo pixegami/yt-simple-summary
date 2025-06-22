@@ -37,13 +37,24 @@ Extract 3-5 core data points (about a paragraph each) from the video. This could
 If a custom instruction is provided, follow that guidance while extracting the core data.
 """
 
+GENERATE_DESCRIPTIVE_NAME_SYSTEM_PROMPT = """
+Generate a short, descriptive name for this video that can be used as a folder/file name. The name should be:
+- 2-4 words maximum
+- Lowercase with hyphens between words
+- Descriptive of the main topic/theme
+- Safe for use as a filename (no special characters except hyphens)
+- Examples: "python-tutorial", "ai-basics", "react-hooks", "data-science"
+
+Only return the name, nothing else.
+"""
+
 GENERIC_OUTPUT_FORMAT = """\n\n
 Show your thinking process in <thinking>...</thinking> tags.
 Then return a concise response in <output>...</output> tags.\n
 """
 
 
-def generate_summary(video: YouTubeVideo, transcript: str, custom_prompt: str = None) -> str:
+def generate_summary(video: YouTubeVideo, transcript: str, custom_prompt: str = None, descriptive_name: str = None) -> str:
 
     print(f"✨ Generating Summary For: {video.title}")
     video_id = video.display_id
@@ -83,7 +94,7 @@ def generate_summary(video: YouTubeVideo, transcript: str, custom_prompt: str = 
     }
 
     # Save the markdown to a file.
-    markdown_path = get_markdown_path(video_id)
+    markdown_path = get_markdown_path(video_id, descriptive_name)
     markdown_text = generate_markdown(
         title=video.title,
         video_id=video.display_id,
@@ -93,7 +104,7 @@ def generate_summary(video: YouTubeVideo, transcript: str, custom_prompt: str = 
     print(f"✅ Markdown Summary: {markdown_path}")
 
     # Also save it as a PDF.
-    pdf_path = get_pdf_path(video_id)
+    pdf_path = get_pdf_path(video_id, descriptive_name)
     generate_pdf(title=video.title, markdown_text=markdown_text, path=pdf_path)
     print(f"✅ PDF Summary: {pdf_path}")
 
